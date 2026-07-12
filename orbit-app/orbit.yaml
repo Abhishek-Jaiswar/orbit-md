@@ -1,6 +1,0 @@
-title: Orbit
-source_dir: content
-output_dir: .orbit
-template_dir: templates
-components_dir: components
-layout: base.hbs
