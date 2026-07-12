@@ -8,6 +8,7 @@
 //! - [`parser`] — `pulldown-cmark` HTML fragment generation
 //! - [`template`] — pre-compiled Handlebars layouts
 //! - [`writer`] — parallel flush to `.orbit/`
+//! - [`orbit_markdown`] — `:::directive` compiler, built-in themes and layouts
 
 #![deny(unsafe_code)]
 
@@ -18,6 +19,7 @@ pub mod dev;
 pub mod discovery;
 pub mod error;
 pub mod models;
+pub mod orbit_markdown;
 pub mod parser;
 pub mod scaffold;
 pub mod template;

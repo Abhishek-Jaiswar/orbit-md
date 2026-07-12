@@ -31,6 +31,28 @@ pub struct FrontMatter {
     /// Arbitrary string metadata preserved for template helpers.
     #[serde(default)]
     pub description: Option<String>,
+
+    /// Built-in theme name for this page (e.g. `"default"`).
+    ///
+    /// When set, overrides the global `theme` in `orbit.yaml` for this page
+    /// only. When absent, the global config theme is used.
+    #[serde(default)]
+    pub theme: Option<String>,
+
+    /// Position of this page in the generated docs sidebar navigation.
+    ///
+    /// Pages are sorted ascending by this value. Pages without `nav_order`
+    /// appear after all ordered pages, sorted alphabetically by title.
+    #[serde(default)]
+    pub nav_order: Option<u32>,
+
+    /// Sidebar section this page belongs to (docs layout only).
+    ///
+    /// Pages sharing the same `nav_group` string are grouped under a labeled
+    /// section heading in the sidebar. Pages without `nav_group` are placed
+    /// in an ungrouped section at the top of the nav.
+    #[serde(default)]
+    pub nav_group: Option<String>,
 }
 
 impl FrontMatter {

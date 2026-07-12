@@ -38,6 +38,7 @@ fn bench_config(content: &Path, output: &Path, templates: &Path, components: &Pa
         template_dir: templates.to_path_buf(),
         components_dir: components.to_path_buf(),
         layout: "base.hbs".into(),
+        theme: "default".into(),
     }
 }
 

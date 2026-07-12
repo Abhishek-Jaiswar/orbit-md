@@ -39,6 +39,13 @@ pub struct Config {
     /// Directory holding reusable Markdown components (`*.hbs`).
     #[serde(default = "default_components_dir")]
     pub components_dir: PathBuf,
+
+    /// Built-in theme applied to all pages that do not override it in front matter.
+    ///
+    /// Available themes in v1.0.0: `"default"`.
+    /// Ignored when a custom `templates/` directory is in use.
+    #[serde(default = "default_theme")]
+    pub theme: String,
 }
 
 impl Default for Config {
@@ -50,6 +57,7 @@ impl Default for Config {
             template_dir: default_template_dir(),
             layout: default_layout(),
             components_dir: default_components_dir(),
+            theme: default_theme(),
         }
     }
 }
@@ -99,4 +107,28 @@ fn default_layout() -> String {
 
 fn default_components_dir() -> PathBuf {
     PathBuf::from("components")
+}
+
+fn default_theme() -> String {
+    "default".to_owned()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn default_config_has_default_theme() {
+        let config = Config::default();
+        assert_eq!(config.theme, "default");
+    }
+
+    #[test]
+    fn config_loads_theme_from_yaml() {
+        let tmp = tempfile::tempdir().unwrap();
+        let path = tmp.path().join("orbit.yaml");
+        std::fs::write(&path, "theme: minimal\ntitle: Test Site\n").unwrap();
+        let config = Config::load(&path).unwrap();
+        assert_eq!(config.theme, "minimal");
+    }
 }
