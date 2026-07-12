@@ -19,7 +19,10 @@ pub fn write_all(pages: &[RenderedPage]) -> Result<(), PageError> {
 fn write_one(page: &RenderedPage) -> Result<(), PageError> {
     if let Some(parent) = page.output_path.parent() {
         fs::create_dir_all(parent).map_err(|err| {
-            PageError::new(&page.output_path, format!("failed to create directory: {err}"))
+            PageError::new(
+                &page.output_path,
+                format!("failed to create directory: {err}"),
+            )
         })?;
     }
 
@@ -34,9 +37,8 @@ fn write_one(page: &RenderedPage) -> Result<(), PageError> {
 
 /// Ensures the output directory exists before compilation begins.
 pub fn prepare_output_dir(path: &Path) -> Result<(), PageError> {
-    fs::create_dir_all(path).map_err(|err| {
-        PageError::new(path, format!("failed to create output directory: {err}"))
-    })
+    fs::create_dir_all(path)
+        .map_err(|err| PageError::new(path, format!("failed to create output directory: {err}")))
 }
 
 /// Removes and recreates the output directory for clean builds.

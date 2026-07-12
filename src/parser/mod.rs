@@ -1,8 +1,8 @@
 //! Pull-based Markdown-to-HTML conversion via `pulldown-cmark`.
 
-use pulldown_cmark::{html, Options, Parser};
+use pulldown_cmark::{Options, Parser, html};
 
-use crate::components::{expand_components, ComponentRegistry};
+use crate::components::{ComponentRegistry, expand_components};
 use crate::error::PageError;
 use crate::models::{CompiledPage, UncompiledPage};
 

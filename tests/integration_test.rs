@@ -8,7 +8,7 @@ use orbit_md::components::ComponentRegistry;
 use orbit_md::config::Config;
 use orbit_md::discovery::discover_pages;
 use orbit_md::parser::compile_all;
-use orbit_md::template::{render_all, TemplateEngine};
+use orbit_md::template::{TemplateEngine, render_all};
 use orbit_md::writer::{clean_output_dir, write_all};
 
 /// Generates a deep tree of Markdown fixtures under `root`.
@@ -72,7 +72,10 @@ fn compiles_one_thousand_deep_markdown_paths() {
     let page_count = 1_000;
     let started_seed = Instant::now();
     seed_markdown_matrix(&content, page_count);
-    eprintln!("seeded {page_count} files in {} ms", started_seed.elapsed().as_millis());
+    eprintln!(
+        "seeded {page_count} files in {} ms",
+        started_seed.elapsed().as_millis()
+    );
 
     let config = bench_config(&content, &output, &templates, &components);
     let registry = empty_registry(&components);

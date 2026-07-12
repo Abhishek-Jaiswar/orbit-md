@@ -7,13 +7,14 @@
 //! - [`components`] — JSX-style Markdown component expansion
 //! - [`parser`] — `pulldown-cmark` HTML fragment generation
 //! - [`template`] — pre-compiled Handlebars layouts
-//! - [`writer`] — parallel flush to `dist/`
+//! - [`writer`] — parallel flush to `.orbit/`
 
 #![deny(unsafe_code)]
 
 pub mod cli;
 pub mod components;
 pub mod config;
+pub mod dev;
 pub mod discovery;
 pub mod error;
 pub mod models;
@@ -33,7 +34,7 @@ use crate::discovery::discover_pages;
 use crate::error::{OrbitError, PageError};
 use crate::models::RenderedPage;
 use crate::parser::{compile_all, compile_markdown};
-use crate::template::{render_all, TemplateEngine};
+use crate::template::{TemplateEngine, render_all};
 use crate::writer::{clean_output_dir, write_all};
 
 /// Build statistics returned after a successful compilation.
@@ -77,12 +78,10 @@ pub fn compile_pipeline(
     config: &Config,
     content_root: &Path,
 ) -> Result<Vec<RenderedPage>, PageError> {
-    let components = ComponentRegistry::from_config(config).map_err(|err| {
-        PageError::new(content_root, err.to_string())
-    })?;
-    let engine = TemplateEngine::from_config(config).map_err(|err| {
-        PageError::new(content_root, err.to_string())
-    })?;
+    let components = ComponentRegistry::from_config(config)
+        .map_err(|err| PageError::new(content_root, err.to_string()))?;
+    let engine = TemplateEngine::from_config(config)
+        .map_err(|err| PageError::new(content_root, err.to_string()))?;
 
     let uncompiled = discover_pages(content_root)?;
     let compiled = compile_all(uncompiled, &components)?;

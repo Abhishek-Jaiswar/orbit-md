@@ -22,13 +22,13 @@ use std::fs;
 use std::path::Path;
 
 use handlebars::Handlebars;
-use pulldown_cmark::{html, Options, Parser};
+use pulldown_cmark::{Options, Parser, html};
 use serde_json::{Map, Value};
 
-pub use parser::{find_next_component, is_component_name, ParsedComponent};
+pub use parser::{ParsedComponent, find_next_component, is_component_name};
 
 use crate::config::Config;
-use crate::error::{PageError, OrbitError};
+use crate::error::{OrbitError, PageError};
 
 /// Pre-compiled Handlebars templates for Markdown components.
 ///
@@ -111,16 +111,16 @@ impl ComponentRegistry {
         for (key, value) in attrs {
             context.insert(key.clone(), Value::String(value.clone()));
         }
-        context.insert("children".to_owned(), Value::String(children_html.to_owned()));
+        context.insert(
+            "children".to_owned(),
+            Value::String(children_html.to_owned()),
+        );
 
         let html = self
             .handlebars
             .render(name, &Value::Object(context))
             .map_err(|err| {
-                PageError::new(
-                    path,
-                    format!("component `{name}` render failed: {err}"),
-                )
+                PageError::new(path, format!("component `{name}` render failed: {err}"))
             })?;
 
         if attrs.contains_key("client") {
@@ -217,11 +217,10 @@ fn wrap_island(name: &str, attrs: &HashMap<String, String>, html: &str) -> Strin
         props.insert(key.clone(), Value::String(value.clone()));
     }
 
-    let props_json = serde_json::to_string(&Value::Object(props)).unwrap_or_else(|_| "{}".to_owned());
+    let props_json =
+        serde_json::to_string(&Value::Object(props)).unwrap_or_else(|_| "{}".to_owned());
 
-    format!(
-        r#"<div data-orbit-island="{name}" data-props='{props_json}'>{html}</div>"#
-    )
+    format!(r#"<div data-orbit-island="{name}" data-props='{props_json}'>{html}</div>"#)
 }
 
 #[cfg(test)]

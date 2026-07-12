@@ -24,7 +24,7 @@ pub struct Config {
     #[serde(default = "default_source_dir")]
     pub source_dir: PathBuf,
 
-    /// Output directory for generated HTML (typically `dist/`).
+    /// Output directory for generated HTML (typically `.orbit/`).
     #[serde(default = "default_output_dir")]
     pub output_dir: PathBuf,
 
@@ -72,9 +72,8 @@ impl Config {
             source,
         })?;
 
-        serde_yaml::from_str(&contents).map_err(|err| {
-            OrbitError::Config(format!("failed to parse {}: {err}", path.display()))
-        })
+        serde_yaml::from_str(&contents)
+            .map_err(|err| OrbitError::Config(format!("failed to parse {}: {err}", path.display())))
     }
 }
 
@@ -87,7 +86,7 @@ fn default_source_dir() -> PathBuf {
 }
 
 fn default_output_dir() -> PathBuf {
-    PathBuf::from("dist")
+    PathBuf::from(".orbit")
 }
 
 fn default_template_dir() -> PathBuf {

@@ -6,7 +6,8 @@ use clap::{Parser, Subcommand};
 
 use crate::build;
 use crate::config::{Config, DEFAULT_CONFIG_FILE};
-use crate::scaffold::{self, title_from_slug, InitOptions};
+use crate::dev::{self, DevOptions};
+use crate::scaffold::{self, InitOptions, title_from_slug};
 
 /// Fast static site generator with React-like Markdown components.
 #[derive(Debug, Parser)]
@@ -35,11 +36,30 @@ pub enum Command {
         title: Option<String>,
     },
 
-    /// Compile Markdown pages to HTML in `dist/`.
+    /// Compile Markdown pages to HTML in `.orbit/`.
     Build {
         /// Path to the site config file.
         #[arg(short, long, default_value = DEFAULT_CONFIG_FILE)]
         config: PathBuf,
+    },
+
+    /// Start a local dev server with watch-and-rebuild.
+    Dev {
+        /// Path to the site config file.
+        #[arg(short, long, default_value = DEFAULT_CONFIG_FILE)]
+        config: PathBuf,
+
+        /// Port for the dev server.
+        #[arg(short, long, default_value_t = 3000)]
+        port: u16,
+
+        /// Host to bind the dev server.
+        #[arg(long, default_value = "127.0.0.1")]
+        host: String,
+
+        /// Open the site in your default browser.
+        #[arg(long)]
+        open: bool,
     },
 
     /// Create a new Markdown page under `content/`.
@@ -76,9 +96,12 @@ pub fn execute(cli: Cli) -> anyhow::Result<()> {
             print_init_success(&path);
         }
         Command::Build { config } => {
-            let site_config = Config::load(&config)
-                .map_err(anyhow::Error::from)
-                .map_err(|err| anyhow::anyhow!("loading config from {}: {err}", config.display()))?;
+            let site_config =
+                Config::load(&config)
+                    .map_err(anyhow::Error::from)
+                    .map_err(|err| {
+                        anyhow::anyhow!("loading config from {}: {err}", config.display())
+                    })?;
 
             let report = build(&site_config).map_err(anyhow::Error::from)?;
             println!(
@@ -88,12 +111,26 @@ pub fn execute(cli: Cli) -> anyhow::Result<()> {
                 site_config.output_dir.display()
             );
         }
+        Command::Dev {
+            config,
+            port,
+            host,
+            open,
+        } => {
+            dev::run(&DevOptions {
+                config_path: config,
+                host,
+                port,
+                open,
+            })
+            .map_err(anyhow::Error::from)?;
+        }
         Command::New { target } => match target {
             NewTarget::Page { path, title } => {
                 let config = Config::load(DEFAULT_CONFIG_FILE).map_err(anyhow::Error::from)?;
                 let page_title = title.unwrap_or_else(|| default_page_title(&path));
-                let created =
-                    scaffold::new_page(&config.source_dir, &path, &page_title).map_err(anyhow::Error::from)?;
+                let created = scaffold::new_page(&config.source_dir, &path, &page_title)
+                    .map_err(anyhow::Error::from)?;
                 println!("Created {}", created.display());
             }
         },
@@ -111,7 +148,7 @@ fn print_init_success(path: &Path) {
     println!("Created Orbit project at {}", path.display());
     println!();
     println!("  cd {name}");
-    println!("  orbit build");
+    println!("  orbit dev");
     println!();
     println!("Edit Markdown in content/ and components in components/.");
 }

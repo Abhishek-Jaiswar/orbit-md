@@ -64,13 +64,12 @@ pub fn discover_pages(root: &Path) -> Result<Vec<UncompiledPage>, PageError> {
 }
 
 fn load_page(content_root: &Path, path: &Path) -> Result<UncompiledPage, PageError> {
-    let raw = fs::read_to_string(path).map_err(|err| {
-        PageError::new(path, format!("failed to read source file: {err}"))
-    })?;
+    let raw = fs::read_to_string(path)
+        .map_err(|err| PageError::new(path, format!("failed to read source file: {err}")))?;
 
-    let relative_path = path.strip_prefix(content_root).map_err(|_| {
-        PageError::new(path, "source file is outside the content root")
-    })?;
+    let relative_path = path
+        .strip_prefix(content_root)
+        .map_err(|_| PageError::new(path, "source file is outside the content root"))?;
 
     let (front_matter, body) = split_front_matter(path, &raw)?;
 
@@ -97,10 +96,7 @@ fn load_page(content_root: &Path, path: &Path) -> Result<UncompiledPage, PageErr
 /// assert_eq!(fm.title.as_deref(), Some("Hello"));
 /// assert!(body.contains("# World"));
 /// ```
-pub fn split_front_matter(
-    path: &Path,
-    contents: &str,
-) -> Result<(FrontMatter, String), PageError> {
+pub fn split_front_matter(path: &Path, contents: &str) -> Result<(FrontMatter, String), PageError> {
     let trimmed = contents.trim_start();
     if !trimmed.starts_with("---") {
         return Ok((FrontMatter::default(), contents.to_owned()));

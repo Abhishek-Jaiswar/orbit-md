@@ -29,9 +29,9 @@ fn cli_init_and_build_round_trip() {
         .expect("run orbit build");
 
     assert!(status.success());
-    assert!(project.join("dist/index.html").exists());
+    assert!(project.join(".orbit/index.html").exists());
 
-    let html = std::fs::read_to_string(project.join("dist/index.html")).unwrap();
+    let html = std::fs::read_to_string(project.join(".orbit/index.html")).unwrap();
     assert!(html.contains("Welcome to My Site"));
 }
 
@@ -39,7 +39,12 @@ fn cli_init_and_build_round_trip() {
 fn cli_new_page_creates_markdown_file() {
     let tmp = tempfile::tempdir().unwrap();
     let project = tmp.path().join("site");
-    cli::execute(Cli::parse_from(["orbit", "init", project.to_str().unwrap()])).unwrap();
+    cli::execute(Cli::parse_from([
+        "orbit",
+        "init",
+        project.to_str().unwrap(),
+    ]))
+    .unwrap();
 
     let status = Command::new(env!("CARGO_BIN_EXE_orbit"))
         .args(["new", "page", "blog/post"])

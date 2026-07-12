@@ -224,7 +224,10 @@ fn read_until_matching_close(
 }
 
 /// Validates a parsed component and returns a [`PageError`] on malformed tags.
-pub fn validate_component(component: &ParsedComponent, path: &std::path::Path) -> Result<(), PageError> {
+pub fn validate_component(
+    component: &ParsedComponent,
+    path: &std::path::Path,
+) -> Result<(), PageError> {
     if component.name.is_empty() {
         return Err(PageError::new(
             path,

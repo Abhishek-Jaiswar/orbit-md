@@ -36,8 +36,6 @@ pub struct FrontMatter {
 impl FrontMatter {
     /// Returns the effective title, using `fallback` when none was declared.
     pub fn effective_title(&self, fallback: &str) -> String {
-        self.title
-            .clone()
-            .unwrap_or_else(|| fallback.to_owned())
+        self.title.clone().unwrap_or_else(|| fallback.to_owned())
     }
 }

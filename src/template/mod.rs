@@ -7,7 +7,7 @@ use handlebars::Handlebars;
 use serde::Serialize;
 
 use crate::config::Config;
-use crate::error::{PageError, OrbitError};
+use crate::error::{OrbitError, PageError};
 use crate::models::{CompiledPage, RenderedPage};
 
 /// Template context passed to layout partials.
@@ -92,10 +92,7 @@ impl TemplateEngine {
             .unwrap_or("Untitled")
             .to_owned();
 
-        let title = page
-            .source
-            .front_matter
-            .effective_title(&fallback_title);
+        let title = page.source.front_matter.effective_title(&fallback_title);
 
         let context = PageContext {
             title: title.clone(),
@@ -106,15 +103,12 @@ impl TemplateEngine {
             tags: &page.source.front_matter.tags,
         };
 
-        let html = self
-            .handlebars
-            .render(&layout, &context)
-            .map_err(|err| {
-                PageError::new(
-                    &page.source.source_path,
-                    format!("template render failed: {err}"),
-                )
-            })?;
+        let html = self.handlebars.render(&layout, &context).map_err(|err| {
+            PageError::new(
+                &page.source.source_path,
+                format!("template render failed: {err}"),
+            )
+        })?;
 
         let output_path = output_path_for(&page.source.relative_path, output_root);
 
@@ -176,9 +170,7 @@ mod tests {
             "<p>Hi</p>".to_owned(),
         );
 
-        let rendered = engine
-            .render_page(compiled, Path::new("dist"))
-            .unwrap();
+        let rendered = engine.render_page(compiled, Path::new("dist")).unwrap();
         assert!(rendered.html.contains("<p>Hi</p>"));
         assert!(rendered.output_path.ends_with("a.html"));
     }

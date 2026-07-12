@@ -23,12 +23,13 @@ Use self-closing tags for simple widgets:
 
 1. Create a component in `components/YourComponent.hbs`
 2. Use it in any `.md` file with JSX-style tags (see the Alert example above)
-3. Run `orbit build` — HTML lands in `dist/`
+3. Run `orbit build` — HTML lands in `.orbit/`
 
 ## Commands
 
 | Command | Description |
 |---|---|
+| `orbit dev` | Local dev server with watch-and-rebuild |
 | `orbit build` | Compile Markdown pages to HTML |
 | `orbit new page path/to/page.md` | Create a new Markdown page |
 | `orbit init my-site` | Scaffold a new project |
