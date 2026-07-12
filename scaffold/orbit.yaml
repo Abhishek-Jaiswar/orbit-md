@@ -1,0 +1,6 @@
+title: {{title}}
+source_dir: content
+output_dir: dist
+template_dir: templates
+components_dir: components
+layout: base.hbs

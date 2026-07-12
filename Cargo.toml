@@ -1,0 +1,39 @@
+[package]
+name = "orbit-md"
+version = "0.1.0"
+edition = "2024"
+description = "Fast static site generator with React-like Markdown components"
+readme = "README.md"
+license = "MIT"
+authors = ["orbit-md contributors"]
+keywords = ["static-site-generator", "markdown", "orbit", "documentation"]
+categories = ["command-line-utilities", "web-programming"]
+repository = "https://github.com/Abhishek-Jaiswar/orbit-md"
+homepage = "https://github.com/Abhishek-Jaiswar/orbit-md"
+documentation = "https://docs.rs/orbit-md"
+include = [
+    "src/**/*",
+    "scaffold/**/*",
+    "Cargo.toml",
+    "README.md",
+    "LICENSE",
+]
+
+[[bin]]
+name = "orbit"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1.0"
+clap = { version = "4.5", features = ["derive"] }
+handlebars = "6.3"
+pulldown-cmark = "0.13"
+rayon = "1.10"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+thiserror = "2.0"
+walkdir = "2.5"
+
+[dev-dependencies]
+tempfile = "3.20"
