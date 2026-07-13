@@ -18,3 +18,8 @@
 
 pub mod ast;
 pub mod directives;
+pub mod layout;
+pub mod parser;
+pub mod pipeline;
+pub mod render;
+pub mod theme;

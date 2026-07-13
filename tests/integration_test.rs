@@ -37,7 +37,7 @@ fn bench_config(content: &Path, output: &Path, templates: &Path, components: &Pa
         output_dir: output.to_path_buf(),
         template_dir: templates.to_path_buf(),
         components_dir: components.to_path_buf(),
-        layout: "base.hbs".into(),
+        layout: "default".into(),
         theme: "default".into(),
     }
 }
@@ -58,17 +58,6 @@ fn compiles_one_thousand_deep_markdown_paths() {
     let output = tmp.path().join("dist");
     let templates = tmp.path().join("templates");
     let components = tmp.path().join("components");
-
-    std::fs::create_dir_all(&templates).unwrap();
-    std::fs::write(
-        templates.join("base.hbs"),
-        r#"<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8"><title>{{title}} | {{site_title}}</title></head>
-<body><article>{{{content}}}</article></body>
-</html>"#,
-    )
-    .unwrap();
 
     let page_count = 1_000;
     let started_seed = Instant::now();
@@ -122,13 +111,6 @@ fn full_build_via_public_api() {
     let templates = tmp.path().join("templates");
     let components = tmp.path().join("components");
 
-    std::fs::create_dir_all(&templates).unwrap();
-    std::fs::write(
-        templates.join("base.hbs"),
-        "<html><body>{{{content}}}</body></html>",
-    )
-    .unwrap();
-
     std::fs::create_dir_all(&content).unwrap();
     std::fs::write(
         content.join("hello.md"),
@@ -144,51 +126,39 @@ fn full_build_via_public_api() {
 }
 
 #[test]
-fn markdown_components_render_to_html() {
+fn orbit_directives_render_to_html() {
     let tmp = tempfile::tempdir().expect("tempdir");
     let content = tmp.path().join("content");
     let output = tmp.path().join("dist");
     let templates = tmp.path().join("templates");
     let components = tmp.path().join("components");
 
-    std::fs::create_dir_all(&templates).unwrap();
     std::fs::create_dir_all(&content).unwrap();
-    std::fs::create_dir_all(&components).unwrap();
-
-    std::fs::write(
-        templates.join("base.hbs"),
-        "<html><body>{{{content}}}</body></html>",
-    )
-    .unwrap();
-    std::fs::write(
-        components.join("Alert.hbs"),
-        r#"<div class="alert alert-{{type}}">{{{children}}}</div>"#,
-    )
-    .unwrap();
-    std::fs::write(
-        components.join("Button.hbs"),
-        r#"<a class="btn" href="{{href}}">{{label}}</a>"#,
-    )
-    .unwrap();
     std::fs::write(
         content.join("demo.md"),
         r#"---
 title: Demo
+layout: default
 ---
 
-<Alert type="info">Hello **components**</Alert>
-<Button href="/docs" label="Go" />
+:::note title="Tip"
+Hello **directives**
+:::
+
+:::buttons
+[Go](/docs) primary
+:::
 "#,
     )
     .unwrap();
 
     let config = bench_config(&content, &output, &templates, &components);
-    build(&config).expect("build with components");
+    build(&config).expect("build with directives");
 
     let html = std::fs::read_to_string(output.join("demo.html")).unwrap();
-    assert!(html.contains(r#"class="alert alert-info""#));
-    assert!(html.contains("<strong>components</strong>"));
-    assert!(html.contains(r#"class="btn" href="/docs""#));
+    assert!(html.contains("orbit-callout orbit-callout--note"));
+    assert!(html.contains("<strong>directives</strong>"));
+    assert!(html.contains("orbit-btn orbit-btn--primary"));
 }
 
 #[test]

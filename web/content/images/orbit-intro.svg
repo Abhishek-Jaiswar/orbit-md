@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="purple-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7048e8"/>
+      <stop offset="100%" stop-color="#b197fc"/>
+    </linearGradient>
+    <linearGradient id="pink-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d63384"/>
+      <stop offset="100%" stop-color="#f783ac"/>
+    </linearGradient>
+    <linearGradient id="blue-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c63e4"/>
+      <stop offset="100%" stop-color="#74c0fc"/>
+    </linearGradient>
+  </defs>
+  <!-- Orbiting Rings -->
+  <circle cx="100" cy="100" r="80" fill="none" stroke="url(#blue-gradient)" stroke-width="2" opacity="0.3" stroke-dasharray="10 5"/>
+  <circle cx="100" cy="100" r="60" fill="none" stroke="url(#purple-gradient)" stroke-width="1.5" opacity="0.5"/>
+  <!-- Central Abstract Block -->
+  <g transform="translate(100,100) rotate(45) translate(-35,-35)">
+    <rect x="0" y="0" width="70" height="70" rx="15" fill="url(#purple-gradient)"/>
+    <rect x="15" y="15" width="40" height="40" rx="8" fill="url(#pink-gradient)" opacity="0.85"/>
+    <circle cx="35" cy="35" r="10" fill="#ffffff"/>
+  </g>
+  <!-- Orbiting Planets/Nodes -->
+  <circle cx="150" cy="50" r="12" fill="url(#pink-gradient)"/>
+  <circle cx="45" cy="120" r="8" fill="url(#blue-gradient)"/>
+  <circle cx="90" cy="170" r="6" fill="url(#purple-gradient)"/>
+</svg>

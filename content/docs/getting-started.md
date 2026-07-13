@@ -1,29 +1,28 @@
 ---
 title: Getting Started
-description: Learn how to use JSX-style components in Markdown.
+description: Learn how to use built-in Markdown directives.
 ---
 
 # Getting Started
 
-Write pages in Markdown and drop in reusable components — just like React, but static.
+Write pages in Markdown and use built-in directives for callouts, cards, buttons, layouts and more.
 
-<Card title="Quick Example">
+:::card title="Quick Example"
+This card directive is a container for grouped information. Below we have some primary actions.
+:::
 
-<Alert type="warning" title="Tip">
-Nest components freely. Inner Markdown is compiled automatically.
-</Alert>
+:::buttons
+[Back home](/) primary
+:::
 
-Use self-closing tags for simple widgets:
-
-<Button href="/" label="Back home" />
-
-</Card>
+:::tip title="Tip"
+Directives can contain any Markdown content. Inner Markdown is compiled automatically.
+:::
 
 ## How it works
 
-1. Create a component in `components/YourComponent.hbs`
-2. Use it in any `.md` file with JSX-style tags (see the Alert example above)
-3. Run `orbit build` — HTML lands in `.orbit/`
+1. Add a directive using the `:::` syntax (like the tip and card examples above).
+2. Run `orbit build` — HTML lands in `.orbit/`.
 
 ## Commands
 

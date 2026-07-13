@@ -65,8 +65,8 @@ fn _format_page_error(
 ) -> String {
     match (line, column) {
         (Some(l), Some(c)) => format!("page error at {}:{l}:{c} — {message}", path.display()),
-        (Some(l), None)    => format!("page error at {}:{l} — {message}", path.display()),
-        _                  => format!("page error at {} — {message}", path.display()),
+        (Some(l), None) => format!("page error at {}:{l} — {message}", path.display()),
+        _ => format!("page error at {} — {message}", path.display()),
     }
 }
 
@@ -158,7 +158,12 @@ mod tests {
 
     #[test]
     fn page_error_at_carries_line_and_column() {
-        let err = PageError::at(Path::new("content/index.md"), 14, 3, "unclosed directive 'note'");
+        let err = PageError::at(
+            Path::new("content/index.md"),
+            14,
+            3,
+            "unclosed directive 'note'",
+        );
         assert_eq!(err.line, Some(14));
         assert_eq!(err.column, Some(3));
         assert!(err.to_string().contains("14:3"));

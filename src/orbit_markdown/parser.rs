@@ -30,9 +30,7 @@
 use std::path::Path;
 
 use crate::error::PageError;
-use crate::orbit_markdown::ast::{
-    ButtonItem, ButtonStyle, CalloutKind, FeatureItem, OrbitNode,
-};
+use crate::orbit_markdown::ast::{ButtonItem, ButtonStyle, CalloutKind, FeatureItem, OrbitNode};
 use crate::orbit_markdown::directives::{DirectiveKind, parse_opening_line, validate_attrs};
 
 // ── Public entry point ────────────────────────────────────────────────────────
@@ -579,7 +577,11 @@ mod tests {
     fn note_without_title() {
         let nodes = p(":::note\nSomething.\n:::\n");
         match &nodes[0] {
-            OrbitNode::Callout { kind, title, children } => {
+            OrbitNode::Callout {
+                kind,
+                title,
+                children,
+            } => {
                 assert_eq!(*kind, CalloutKind::Note);
                 assert!(title.is_none());
                 assert_eq!(children.len(), 1);
@@ -603,17 +605,19 @@ mod tests {
     #[test]
     fn all_six_callout_kinds_parse() {
         for (name, expected) in [
-            ("note",    CalloutKind::Note),
-            ("info",    CalloutKind::Info),
+            ("note", CalloutKind::Note),
+            ("info", CalloutKind::Info),
             ("warning", CalloutKind::Warning),
-            ("danger",  CalloutKind::Danger),
+            ("danger", CalloutKind::Danger),
             ("success", CalloutKind::Success),
-            ("tip",     CalloutKind::Tip),
+            ("tip", CalloutKind::Tip),
         ] {
             let src = format!(":::{name}\nbody\n:::\n");
             let nodes = p(&src);
             match &nodes[0] {
-                OrbitNode::Callout { kind, .. } => assert_eq!(*kind, expected, "kind mismatch for {name}"),
+                OrbitNode::Callout { kind, .. } => {
+                    assert_eq!(*kind, expected, "kind mismatch for {name}")
+                }
                 _ => panic!("expected Callout for {name}"),
             }
         }
@@ -654,11 +658,9 @@ mod tests {
 
     #[test]
     fn three_adjacent_cards_become_grid() {
-        let nodes = p(
-            ":::card title=\"A\"\nA.\n:::\n\
+        let nodes = p(":::card title=\"A\"\nA.\n:::\n\
              :::card title=\"B\"\nB.\n:::\n\
-             :::card title=\"C\"\nC.\n:::\n",
-        );
+             :::card title=\"C\"\nC.\n:::\n");
         assert_eq!(nodes.len(), 1);
         match &nodes[0] {
             OrbitNode::CardGrid(cards) => assert_eq!(cards.len(), 3),
@@ -669,11 +671,9 @@ mod tests {
     #[test]
     fn cards_broken_by_other_node_are_not_grouped() {
         // card — callout — card: two separate cards, no grid.
-        let nodes = p(
-            ":::card title=\"A\"\nA.\n:::\n\
+        let nodes = p(":::card title=\"A\"\nA.\n:::\n\
              :::note\nBreaker.\n:::\n\
-             :::card title=\"B\"\nB.\n:::\n",
-        );
+             :::card title=\"B\"\nB.\n:::\n");
         assert_eq!(nodes.len(), 3);
         assert!(matches!(nodes[0], OrbitNode::Card { .. }));
         assert!(matches!(nodes[1], OrbitNode::Callout { .. }));
@@ -693,19 +693,17 @@ mod tests {
 
     #[test]
     fn features_parses_bold_title_colon_body() {
-        let nodes = p(
-            ":::features\n\
+        let nodes = p(":::features\n\
              - **Markdown-native**: Write plain files.\n\
              - **Zero JS**: Static HTML.\n\
-             :::\n",
-        );
+             :::\n");
         match &nodes[0] {
             OrbitNode::Features { items } => {
                 assert_eq!(items.len(), 2);
                 assert_eq!(items[0].title, "Markdown-native");
-                assert_eq!(items[0].body,  "Write plain files.");
+                assert_eq!(items[0].body, "Write plain files.");
                 assert_eq!(items[1].title, "Zero JS");
-                assert_eq!(items[1].body,  "Static HTML.");
+                assert_eq!(items[1].body, "Static HTML.");
             }
             _ => panic!("expected Features"),
         }
@@ -715,17 +713,15 @@ mod tests {
 
     #[test]
     fn buttons_parses_label_href_style() {
-        let nodes = p(
-            ":::buttons\n\
+        let nodes = p(":::buttons\n\
              [Get started](/docs) primary\n\
              [GitHub](https://github.com) secondary\n\
-             :::\n",
-        );
+             :::\n");
         match &nodes[0] {
             OrbitNode::Buttons { items } => {
                 assert_eq!(items.len(), 2);
                 assert_eq!(items[0].label, "Get started");
-                assert_eq!(items[0].href,  "/docs");
+                assert_eq!(items[0].href, "/docs");
                 assert_eq!(items[0].style, ButtonStyle::Primary);
                 assert_eq!(items[1].style, ButtonStyle::Secondary);
             }
@@ -748,7 +744,12 @@ mod tests {
     fn hero_title_and_subtitle() {
         let nodes = p(":::hero title=\"Orbit\" subtitle=\"Fast sites\"\nDesc.\n:::\n");
         match &nodes[0] {
-            OrbitNode::Hero { title, subtitle, body, actions } => {
+            OrbitNode::Hero {
+                title,
+                subtitle,
+                body,
+                actions,
+            } => {
                 assert_eq!(title, "Orbit");
                 assert_eq!(subtitle.as_deref(), Some("Fast sites"));
                 assert_eq!(body.len(), 1);
@@ -778,12 +779,10 @@ mod tests {
 
     #[test]
     fn nav_group_parses_links() {
-        let nodes = p(
-            ":::nav-group title=\"Docs\"\n\
+        let nodes = p(":::nav-group title=\"Docs\"\n\
              - [Config](/docs/config)\n\
              - [CLI](/docs/cli)\n\
-             :::\n",
-        );
+             :::\n");
         match &nodes[0] {
             OrbitNode::NavGroup { title, links } => {
                 assert_eq!(title, "Docs");
@@ -798,8 +797,7 @@ mod tests {
 
     #[test]
     fn figure_all_attrs() {
-        let nodes =
-            p(":::figure src=\"/img.png\" alt=\"Diagram\" caption=\"Fig 1.\"\n:::\n");
+        let nodes = p(":::figure src=\"/img.png\" alt=\"Diagram\" caption=\"Fig 1.\"\n:::\n");
         match &nodes[0] {
             OrbitNode::Figure { src, alt, caption } => {
                 assert_eq!(src, "/img.png");

@@ -2,7 +2,7 @@
 name = "orbit-md"
 version = "0.1.0"
 edition = "2024"
-description = "Fast static site generator with React-like Markdown components"
+description = "Fast static site generator with built-in Markdown directives, themes, and layouts"
 readme = "README.md"
 license = "MIT"
 authors = ["orbit-md contributors"]
@@ -27,11 +27,9 @@ path = "src/main.rs"
 [dependencies]
 anyhow = "1.0"
 clap = { version = "4.5", features = ["derive"] }
-handlebars = "6.3"
 pulldown-cmark = "0.13"
 rayon = "1.10"
 serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
 serde_yaml = "0.9"
 thiserror = "2.0"
 notify = "8.2"

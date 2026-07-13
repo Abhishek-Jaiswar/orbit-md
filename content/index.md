@@ -9,15 +9,17 @@ description: A demo page for the Orbit static site generator.
 
 # Welcome
 
-<Alert type="info" title="Welcome">
-You write **Markdown**, not HTML. Components handle the UI.
-</Alert>
+:::info title="Welcome"
+You write **Markdown** plus built-in directives. Orbit compiles it to clean static HTML.
+:::
 
 This site is built with **Orbit**, a parallel Rust static site generator.
 
 - `pulldown-cmark` for Markdown
 - `rayon` for data parallelism
-- `handlebars` for layouts
-- JSX-style components in Markdown
+- Built-in themes and layouts
+- Markdown-native directives
 
-<Button href="/docs/getting-started.html" label="Read the docs" />
+:::buttons
+[Read the docs](/docs/getting-started.html) primary
+:::

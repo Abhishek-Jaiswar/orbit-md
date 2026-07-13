@@ -9,14 +9,14 @@ use crate::config::{Config, DEFAULT_CONFIG_FILE};
 use crate::dev::{self, DevOptions};
 use crate::scaffold::{self, InitOptions, title_from_slug};
 
-/// Fast static site generator with React-like Markdown components.
+/// Fast static site generator with built-in Markdown directives.
 #[derive(Debug, Parser)]
 #[command(
     name = "orbit",
     bin_name = "orbit",
     version,
-    about = "Orbit — Markdown static sites with React-like components",
-    long_about = "Orbit (orbit-md) compiles Markdown pages and JSX-style components into static HTML.\n\nInstall: cargo install orbit-md\nInit:    orbit init my-site\nBuild:   orbit build"
+    about = "Orbit — Markdown static sites with built-in directives",
+    long_about = "Orbit (orbit-md) compiles Markdown pages with built-in directives, layouts, and themes into static HTML.\n\nInstall: cargo install orbit-md\nInit:    orbit init my-site\nBuild:   orbit build"
 )]
 pub struct Cli {
     #[command(subcommand)]
@@ -150,7 +150,7 @@ fn print_init_success(path: &Path) {
     println!("  cd {name}");
     println!("  orbit dev");
     println!();
-    println!("Edit Markdown in content/ and components in components/.");
+    println!("Edit Markdown files in content/ and configure orbit.yaml.");
 }
 
 fn default_page_title(path: &Path) -> String {

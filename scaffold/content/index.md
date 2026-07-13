@@ -1,14 +1,22 @@
 ---
 title: Welcome
 description: Your new static site built with Orbit.
+layout: default
 ---
 
-# Welcome to {{title}}
+:::hero title="Welcome to {{title}}" subtitle="The Markdown-native Static Site Generator"
+:::buttons
+[Read the docs](/docs/getting-started.html) primary
+[GitHub Repository](https://github.com/Abhishek-Jaiswar/orbit-md) secondary
+:::
+:::
 
-<Alert type="info" title="Welcome">
-You write **Markdown**, not HTML. Components handle the UI.
-</Alert>
+:::features
+- **Markdown-native**: Write plain `.md` files first with zero complex HTML/CSS setups.
+- **Rich Directives**: Use built-in containers for callouts, cards, steps, and heroes.
+- **Built-in Styles**: Ships with pre-designed responsive themes, layouts, and dark mode.
+:::
 
-This site was created with **Orbit** — a fast static site generator with React-like components in Markdown.
-
-<Button href="/docs/getting-started.html" label="Read the docs" />
+:::note title="Quick Start"
+To modify this page, open and edit **`content/index.md`** in your editor. Run `orbit dev` to watch your changes live!
+:::

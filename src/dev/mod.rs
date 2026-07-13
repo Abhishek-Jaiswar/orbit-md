@@ -143,8 +143,6 @@ fn watch_project_paths(
     let paths = [
         config_path.to_path_buf(),
         config.source_dir.clone(),
-        config.components_dir.clone(),
-        config.template_dir.clone(),
     ];
 
     for path in paths {

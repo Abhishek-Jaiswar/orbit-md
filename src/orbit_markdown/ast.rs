@@ -26,7 +26,6 @@ pub enum OrbitNode {
     Markdown(String),
 
     // ── Callouts ─────────────────────────────────────────────────────────────
-
     /// A styled callout block: note, info, warning, danger, success, or tip.
     ///
     /// ```md
@@ -44,7 +43,6 @@ pub enum OrbitNode {
     },
 
     // ── Structure blocks ──────────────────────────────────────────────────────
-
     /// A numbered how-to sequence.
     ///
     /// ```md
@@ -103,7 +101,6 @@ pub enum OrbitNode {
     },
 
     // ── Navigation blocks ─────────────────────────────────────────────────────
-
     /// A group of CTA link buttons.
     ///
     /// ```md
@@ -159,7 +156,6 @@ pub enum OrbitNode {
     },
 
     // ── Media blocks ──────────────────────────────────────────────────────────
-
     /// A semantic image with required alt text and an optional caption.
     ///
     /// ```md
@@ -199,24 +195,24 @@ impl CalloutKind {
     /// Returns the CSS modifier class suffix (e.g. `"warning"`).
     pub fn css_name(&self) -> &'static str {
         match self {
-            Self::Note    => "note",
-            Self::Info    => "info",
+            Self::Note => "note",
+            Self::Info => "info",
             Self::Warning => "warning",
-            Self::Danger  => "danger",
+            Self::Danger => "danger",
             Self::Success => "success",
-            Self::Tip     => "tip",
+            Self::Tip => "tip",
         }
     }
 
     /// Returns the emoji icon for this callout kind.
     pub fn icon(&self) -> &'static str {
         match self {
-            Self::Note    => "📝",
-            Self::Info    => "ℹ️",
+            Self::Note => "📝",
+            Self::Info => "ℹ️",
             Self::Warning => "⚠️",
-            Self::Danger  => "🚨",
+            Self::Danger => "🚨",
             Self::Success => "✅",
-            Self::Tip     => "💡",
+            Self::Tip => "💡",
         }
     }
 }
@@ -264,19 +260,19 @@ impl ButtonStyle {
     pub fn from_str(s: &str) -> Self {
         match s.trim().to_ascii_lowercase().as_str() {
             "secondary" => Self::Secondary,
-            "ghost"     => Self::Ghost,
-            "danger"    => Self::Danger,
-            _           => Self::Primary,
+            "ghost" => Self::Ghost,
+            "danger" => Self::Danger,
+            _ => Self::Primary,
         }
     }
 
     /// Returns the CSS modifier class suffix (e.g. `"secondary"`).
     pub fn css_name(&self) -> &'static str {
         match self {
-            Self::Primary   => "primary",
+            Self::Primary => "primary",
             Self::Secondary => "secondary",
-            Self::Ghost     => "ghost",
-            Self::Danger    => "danger",
+            Self::Ghost => "ghost",
+            Self::Danger => "danger",
         }
     }
 }
@@ -290,12 +286,12 @@ mod tests {
     #[test]
     fn callout_kind_css_name_and_icon_are_consistent() {
         let cases = [
-            (CalloutKind::Note,    "note",    "📝"),
-            (CalloutKind::Info,    "info",    "ℹ️"),
+            (CalloutKind::Note, "note", "📝"),
+            (CalloutKind::Info, "info", "ℹ️"),
             (CalloutKind::Warning, "warning", "⚠️"),
-            (CalloutKind::Danger,  "danger",  "🚨"),
+            (CalloutKind::Danger, "danger", "🚨"),
             (CalloutKind::Success, "success", "✅"),
-            (CalloutKind::Tip,     "tip",     "💡"),
+            (CalloutKind::Tip, "tip", "💡"),
         ];
         for (kind, css, icon) in cases {
             assert_eq!(kind.css_name(), css);
@@ -305,16 +301,16 @@ mod tests {
 
     #[test]
     fn button_style_from_str_parses_known_tokens() {
-        assert_eq!(ButtonStyle::from_str("primary"),   ButtonStyle::Primary);
+        assert_eq!(ButtonStyle::from_str("primary"), ButtonStyle::Primary);
         assert_eq!(ButtonStyle::from_str("secondary"), ButtonStyle::Secondary);
-        assert_eq!(ButtonStyle::from_str("ghost"),     ButtonStyle::Ghost);
-        assert_eq!(ButtonStyle::from_str("danger"),    ButtonStyle::Danger);
+        assert_eq!(ButtonStyle::from_str("ghost"), ButtonStyle::Ghost);
+        assert_eq!(ButtonStyle::from_str("danger"), ButtonStyle::Danger);
     }
 
     #[test]
     fn button_style_from_str_falls_back_to_primary() {
         assert_eq!(ButtonStyle::from_str("unknown"), ButtonStyle::Primary);
-        assert_eq!(ButtonStyle::from_str(""),        ButtonStyle::Primary);
+        assert_eq!(ButtonStyle::from_str(""), ButtonStyle::Primary);
         assert_eq!(ButtonStyle::from_str("PRIMARY"), ButtonStyle::Primary);
     }
 
@@ -339,7 +335,11 @@ mod tests {
             children: vec![OrbitNode::Markdown("Be careful.".to_owned())],
         };
         match node {
-            OrbitNode::Callout { kind, title, children } => {
+            OrbitNode::Callout {
+                kind,
+                title,
+                children,
+            } => {
                 assert_eq!(kind, CalloutKind::Warning);
                 assert_eq!(title.as_deref(), Some("Heads up"));
                 assert_eq!(children.len(), 1);
@@ -378,7 +378,12 @@ mod tests {
             actions: Some(Box::new(OrbitNode::Buttons { items: vec![] })),
         };
         match hero {
-            OrbitNode::Hero { title, subtitle, body, actions } => {
+            OrbitNode::Hero {
+                title,
+                subtitle,
+                body,
+                actions,
+            } => {
                 assert_eq!(title, "Orbit");
                 assert!(subtitle.is_some());
                 assert_eq!(body.len(), 1);

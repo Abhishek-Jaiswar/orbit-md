@@ -102,7 +102,7 @@ fn default_template_dir() -> PathBuf {
 }
 
 fn default_layout() -> String {
-    "base.hbs".to_owned()
+    "default".to_owned()
 }
 
 fn default_components_dir() -> PathBuf {

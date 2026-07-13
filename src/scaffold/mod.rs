@@ -31,22 +31,6 @@ const SCAFFOLD_FILES: &[ScaffoldFile] = &[
         relative_path: "content/docs/getting-started.md",
         contents: include_str!("../../scaffold/content/docs/getting-started.md"),
     },
-    ScaffoldFile {
-        relative_path: "components/Alert.hbs",
-        contents: include_str!("../../scaffold/components/Alert.hbs"),
-    },
-    ScaffoldFile {
-        relative_path: "components/Button.hbs",
-        contents: include_str!("../../scaffold/components/Button.hbs"),
-    },
-    ScaffoldFile {
-        relative_path: "components/Card.hbs",
-        contents: include_str!("../../scaffold/components/Card.hbs"),
-    },
-    ScaffoldFile {
-        relative_path: "templates/base.hbs",
-        contents: include_str!("../../scaffold/templates/base.hbs"),
-    },
 ];
 
 /// Options for creating a new site project.
@@ -203,8 +187,6 @@ mod tests {
 
         assert!(path.join("orbit.yaml").exists());
         assert!(path.join("content/index.md").exists());
-        assert!(path.join("components/Alert.hbs").exists());
-        assert!(path.join("templates/base.hbs").exists());
 
         let config = std::fs::read_to_string(path.join("orbit.yaml")).unwrap();
         assert!(config.contains("title: Demo Site"));

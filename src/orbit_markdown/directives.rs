@@ -16,9 +16,18 @@ use crate::error::PageError;
 ///
 /// Used for typo suggestions in D001 errors.
 const ALL_DIRECTIVES: &[&str] = &[
-    "note", "info", "warning", "danger", "success", "tip",
-    "steps", "card", "features",
-    "buttons", "hero", "nav-group",
+    "note",
+    "info",
+    "warning",
+    "danger",
+    "success",
+    "tip",
+    "steps",
+    "card",
+    "features",
+    "buttons",
+    "hero",
+    "nav-group",
     "figure",
 ];
 
@@ -72,39 +81,39 @@ impl DirectiveKind {
     /// responsible for turning `None` into a D001 error with a suggestion.
     pub fn from_str(name: &str) -> Option<Self> {
         match name {
-            "note"      => Some(Self::Note),
-            "info"      => Some(Self::Info),
-            "warning"   => Some(Self::Warning),
-            "danger"    => Some(Self::Danger),
-            "success"   => Some(Self::Success),
-            "tip"       => Some(Self::Tip),
-            "steps"     => Some(Self::Steps),
-            "card"      => Some(Self::Card),
-            "features"  => Some(Self::Features),
-            "buttons"   => Some(Self::Buttons),
-            "hero"      => Some(Self::Hero),
+            "note" => Some(Self::Note),
+            "info" => Some(Self::Info),
+            "warning" => Some(Self::Warning),
+            "danger" => Some(Self::Danger),
+            "success" => Some(Self::Success),
+            "tip" => Some(Self::Tip),
+            "steps" => Some(Self::Steps),
+            "card" => Some(Self::Card),
+            "features" => Some(Self::Features),
+            "buttons" => Some(Self::Buttons),
+            "hero" => Some(Self::Hero),
             "nav-group" => Some(Self::NavGroup),
-            "figure"    => Some(Self::Figure),
-            _           => None,
+            "figure" => Some(Self::Figure),
+            _ => None,
         }
     }
 
     /// Returns the canonical string name for this directive kind.
     pub fn as_str(&self) -> &'static str {
         match self {
-            Self::Note     => "note",
-            Self::Info     => "info",
-            Self::Warning  => "warning",
-            Self::Danger   => "danger",
-            Self::Success  => "success",
-            Self::Tip      => "tip",
-            Self::Steps    => "steps",
-            Self::Card     => "card",
+            Self::Note => "note",
+            Self::Info => "info",
+            Self::Warning => "warning",
+            Self::Danger => "danger",
+            Self::Success => "success",
+            Self::Tip => "tip",
+            Self::Steps => "steps",
+            Self::Card => "card",
             Self::Features => "features",
-            Self::Buttons  => "buttons",
-            Self::Hero     => "hero",
+            Self::Buttons => "buttons",
+            Self::Hero => "hero",
             Self::NavGroup => "nav-group",
-            Self::Figure   => "figure",
+            Self::Figure => "figure",
         }
     }
 
@@ -113,12 +122,12 @@ impl DirectiveKind {
     /// The validator returns a D002 error for any missing required attribute.
     pub fn required_attrs(&self) -> &'static [&'static str] {
         match self {
-            Self::Card    => &["title"],
-            Self::Hero    => &["title"],
+            Self::Card => &["title"],
+            Self::Hero => &["title"],
             Self::NavGroup => &["title"],
-            Self::Figure  => &["src", "alt"],
+            Self::Figure => &["src", "alt"],
             // All other directives have no required attributes.
-            _             => &[],
+            _ => &[],
         }
     }
 
@@ -128,17 +137,14 @@ impl DirectiveKind {
     /// future tooling (e.g. editor completion).
     pub fn optional_attrs(&self) -> &'static [&'static str] {
         match self {
-            Self::Note
-            | Self::Info
-            | Self::Warning
-            | Self::Danger
-            | Self::Success
-            | Self::Tip    => &["title"],
-            Self::Card     => &["href"],
-            Self::Hero     => &["subtitle"],
-            Self::Figure   => &["caption"],
+            Self::Note | Self::Info | Self::Warning | Self::Danger | Self::Success | Self::Tip => {
+                &["title"]
+            }
+            Self::Card => &["href"],
+            Self::Hero => &["subtitle"],
+            Self::Figure => &["caption"],
             // Steps, Features, Buttons, NavGroup accept no optional attrs.
-            _              => &[],
+            _ => &[],
         }
     }
 
@@ -372,8 +378,12 @@ fn edit_distance(a: &str, b: &str) -> usize {
     let (m, n) = (a.len(), b.len());
 
     let mut dp = vec![vec![0usize; n + 1]; m + 1];
-    for i in 0..=m { dp[i][0] = i; }
-    for j in 0..=n { dp[0][j] = j; }
+    for i in 0..=m {
+        dp[i][0] = i;
+    }
+    for j in 0..=n {
+        dp[0][j] = j;
+    }
 
     for i in 1..=m {
         for j in 1..=n {
@@ -399,10 +409,7 @@ mod tests {
     #[test]
     fn from_str_recognises_all_directives() {
         for name in ALL_DIRECTIVES {
-            assert!(
-                DirectiveKind::from_str(name).is_some(),
-                "missing: {name}"
-            );
+            assert!(DirectiveKind::from_str(name).is_some(), "missing: {name}");
         }
     }
 
@@ -443,7 +450,11 @@ mod tests {
             DirectiveKind::Success,
             DirectiveKind::Tip,
         ] {
-            assert!(kind.required_attrs().is_empty(), "{} should have no required attrs", kind.as_str());
+            assert!(
+                kind.required_attrs().is_empty(),
+                "{} should have no required attrs",
+                kind.as_str()
+            );
         }
     }
 
@@ -484,7 +495,7 @@ mod tests {
     fn parse_attrs_multiple_attributes() {
         let attrs = parse_attrs(r#"title="Fast Builds" href="/docs/perf" disabled"#);
         assert_eq!(attrs.get("title").map(String::as_str), Some("Fast Builds"));
-        assert_eq!(attrs.get("href").map(String::as_str),  Some("/docs/perf"));
+        assert_eq!(attrs.get("href").map(String::as_str), Some("/docs/perf"));
         assert_eq!(attrs.get("disabled").map(String::as_str), Some("true"));
     }
 
@@ -527,7 +538,10 @@ mod tests {
         .unwrap()
         .unwrap();
         assert_eq!(result.kind, DirectiveKind::Warning);
-        assert_eq!(result.attrs.get("title").map(String::as_str), Some("Heads up"));
+        assert_eq!(
+            result.attrs.get("title").map(String::as_str),
+            Some("Heads up")
+        );
     }
 
     #[test]
@@ -557,8 +571,7 @@ mod tests {
     #[test]
     fn validate_attrs_card_without_title_errors() {
         let attrs = HashMap::new();
-        let err = validate_attrs(&DirectiveKind::Card, &attrs, Path::new("p.md"), 5)
-            .unwrap_err();
+        let err = validate_attrs(&DirectiveKind::Card, &attrs, Path::new("p.md"), 5).unwrap_err();
         assert_eq!(err.line, Some(5));
         assert!(err.to_string().contains("title"));
     }
@@ -575,8 +588,7 @@ mod tests {
         // Only src — should fail on alt.
         let mut attrs = HashMap::new();
         attrs.insert("src".to_owned(), "/img.png".to_owned());
-        let err = validate_attrs(&DirectiveKind::Figure, &attrs, Path::new("p.md"), 2)
-            .unwrap_err();
+        let err = validate_attrs(&DirectiveKind::Figure, &attrs, Path::new("p.md"), 2).unwrap_err();
         assert!(err.to_string().contains("alt"));
     }
 
@@ -585,8 +597,8 @@ mod tests {
     #[test]
     fn suggest_common_typos() {
         assert_eq!(suggest("warnnig"), Some("warning"));
-        assert_eq!(suggest("noe"),     Some("note"));
-        assert_eq!(suggest("crad"),    Some("card"));
+        assert_eq!(suggest("noe"), Some("note"));
+        assert_eq!(suggest("crad"), Some("card"));
     }
 
     #[test]
